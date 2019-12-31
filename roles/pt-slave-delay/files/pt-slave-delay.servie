@@ -1,0 +1,7 @@
+[Unit]
+Description = pt-slave-delay
+
+[Service]
+ExecStart=/bin/pt-slave-delay
+Restart=on-failure
+User=root

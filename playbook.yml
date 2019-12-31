@@ -1,0 +1,4 @@
+---
+- hosts: all
+  roles:
+    - pt-slave-delay

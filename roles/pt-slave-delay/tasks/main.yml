@@ -1,0 +1,53 @@
+---
+
+- name: Add percona yum repository
+  yum:
+    name: "https://repo.percona.com/yum/percona-release-latest.noarch.rpm"
+    state: present
+
+- name: Install packages from percona repo
+  yum:
+    name: "percona-toolkit"
+    state: latest
+    enablerepo: percona-release*
+
+- name: Create log directory
+  file:
+    path: /var/log/mysql/
+    state: directory
+    mode: '0755'
+
+- name: Create config directory
+  file:
+    path: /etc/percona-toolkit/
+    state: directory
+    mode: '0755'
+
+- name: Render config
+  template:
+    src: pt-slave-delay.j2
+    dest: /etc/percona-toolkit/pt-slave-delay.conf
+    owner: root
+    mode: '0600'
+
+- name: copy systemd unit
+  template:
+    src: pt-slave-delay.servie
+    dest: /usr/lib/systemd/system/pt-slave-delay.servie
+    owner: root
+    mode: '0600'
+
+- name: Create database user using hashed password with all database privileges
+  mysql_user:
+    name: "{{delayed_repl}}"
+    password: "{{bGa6HW3E}}"
+    encrypted: no
+    priv: '*.*:SUPER,REPLICATION'
+    state: present
+
+- name: Restart service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: pt-slave-delay
+    enabled: yes
