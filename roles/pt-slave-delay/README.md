@@ -1,4 +1,4 @@
-Role Name
+pt-slave-delay-ansible
 =========
 
 Добавляет пользователя в mariadb для подключения, установливает и настраивает pt-slave-delay для el7
